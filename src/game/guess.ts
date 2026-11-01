@@ -1,11 +1,18 @@
+import { createDigitValidator } from './digits.js';
 import type { NumericBase, SecretLength } from './types.js';
+
+/** Digits are unique when the set of them is as large as the list itself. */
+const hasUniqueDigits = (digits: readonly string[]): boolean =>
+  new Set<string>(digits).size === digits.length;
 
 /**
  * Checks that a guess has exactly `length` characters, that every character is
  * a digit allowed by `base`, and that no digit repeats. Hex digits are compared
  * case-insensitively, so `Aa` counts as a repetition.
- *
- * Stub: TDD red step, rejects every guess.
  */
-export const isValidGuess = (_guess: string, _length: SecretLength, _base: NumericBase): boolean =>
-  false;
+export const isValidGuess = (guess: string, length: SecretLength, base: NumericBase): boolean => {
+  const isDigit = createDigitValidator(base);
+  const digits = guess.toLowerCase().split('');
+
+  return digits.length === length && digits.every(isDigit) && hasUniqueDigits(digits);
+};
