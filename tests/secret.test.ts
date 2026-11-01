@@ -137,6 +137,7 @@ describe('generateSecret', () => {
     expect(generateSecret(TWO, DECIMAL, () => 0)).toBe('01');
     expect(generateSecret(SIX, DECIMAL, () => 0)).toBe('012345');
     expect(generateSecret(TWO, HEX, () => 0)).toBe('01');
-    expect(generateSecret(TWO, HEX, () => 0.99)).toBe('10');
+    expect(generateSecret(TWO, HEX, () => 0.99)).toBe('fe');
+    expect(generateSecret(TWO, BINARY, () => 0.99)).toBe('10');
   });
 });
