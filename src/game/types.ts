@@ -6,6 +6,12 @@
 /** Supported radixes: binary, octal, decimal, hexadecimal. */
 export type NumericBase = 2 | 8 | 10 | 16;
 
+/**
+ * Injectable source of randomness. Passing it as a parameter keeps secret
+ * generation a pure function: tests supply a deterministic sequence.
+ */
+export type RandomSource = () => number;
+
 /** Allowed secret length in digits (clamped further by the radix alphabet). */
 export type SecretLength = 2 | 3 | 4 | 5 | 6;
 
