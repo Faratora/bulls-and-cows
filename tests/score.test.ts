@@ -28,7 +28,10 @@ describe('evaluateGuess', () => {
   });
 
   it('keeps leading zeros significant', () => {
-    expect(evaluateGuess('0123', '1023')).toEqual({ bulls: 1, cows: 3 });
+    // '0' at index 0 is a real digit: 0123 vs 1023 has two well-placed digits.
+    expect(evaluateGuess('0123', '1023')).toEqual({ bulls: 2, cows: 2 });
+    // A rotation keeps every digit as a cow, which a numeric comparison loses.
+    expect(evaluateGuess('0123', '1230')).toEqual({ bulls: 0, cows: 4 });
   });
 
   it('treats uppercase hex digits as equal to lowercase ones', () => {
