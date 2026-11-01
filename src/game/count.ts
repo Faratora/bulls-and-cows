@@ -6,9 +6,11 @@ import type { NumericBase, SecretLength } from './types.js';
  * P(base, length) = base! / (base - length)!. A secret may start with zero, so
  * no leading-zero variant is subtracted.
  *
- * Stub: TDD red step.
+ * Recursive form: P(base, length) = base * P(base - 1, length - 1), with the
+ * empty product P(base, 0) = 1 and P(base, length > base) = 0.
  */
-export const countPossibleSecretsUncached = (_length: number, _base: number): number => 0;
+export const countPossibleSecretsUncached = (length: number, base: number): number =>
+  length === 0 ? 1 : length > base ? 0 : base * countPossibleSecretsUncached(length - 1, base - 1);
 
 /** Memoized factory used by the settings screen. */
 export const createCountPossibleSecrets = (
