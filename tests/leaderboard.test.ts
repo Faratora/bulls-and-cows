@@ -107,12 +107,15 @@ describe('addRecord', () => {
   });
 
   it('drops records pushed out by a better result, not just the oldest', () => {
-    const records = [record(1, 5_000), record(2, 5_000), record(3, 5_000)];
+    // A full list is required: only then does a new entry push a record out.
+    const records = Array.from({ length: TOP_SIZE }, (_unused, index) => record(index + 1, 5_000));
     const updated = addRecord(records, record(1, 1_000));
 
-    expect(updated).toHaveLength(3);
+    expect(updated).toHaveLength(TOP_SIZE);
     expect(updated[0]).toEqual(record(1, 1_000));
-    expect(updated.some(item => item.elapsedMs === 5_000 && item.attempts === 1)).toBe(true);
+    // The weakest record (the most attempts) is gone, the rest remain.
+    expect(updated.some(item => item.attempts === TOP_SIZE)).toBe(false);
+    expect(updated.some(item => item.attempts === TOP_SIZE - 1)).toBe(true);
   });
 });
 
