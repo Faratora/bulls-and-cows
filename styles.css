@@ -1,1 +1,119 @@
 /* Bulls and Cows — global styles */
+
+:root {
+  color-scheme: dark;
+  --bg: #14171f;
+  --panel: #1e2330;
+  --text: #e8eaf0;
+  --muted: #9aa1b2;
+  --accent: #5b8cff;
+  --accent-hover: #7aa2ff;
+  --disabled: #2a3040;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+#app {
+  width: 100%;
+  max-width: 640px;
+  padding: 32px 16px;
+}
+
+.screen {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.screen__title {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.screen__subtitle {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.settings__group {
+  margin-bottom: 20px;
+}
+
+.settings__label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.settings__options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.settings__option {
+  padding: 8px 16px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.settings__option:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(91, 140, 255, 0.1);
+}
+
+.settings__option:disabled {
+  color: var(--muted);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.settings__option.is-selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  font-weight: 600;
+}
+
+.settings__start {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.settings__start:hover {
+  background: var(--accent-hover);
+}
