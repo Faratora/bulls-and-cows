@@ -1,6 +1,7 @@
-import { emptyState, startRound } from './game/state.js';
+import { emptyState, recordGuess, startRound } from './game/state.js';
 import type { GameSettings, GameState, NumericBase, SecretLength } from './game/types.js';
 import { createSettingsScreen } from './ui/settings.js';
+import { createPlayScreen } from './ui/play.js';
 
 /**
  * Application controller. Owns the single game state reference and re-renders
@@ -26,6 +27,7 @@ const createAppRoot = (): HTMLElement => {
 const start = (): void => {
   const root = createAppRoot();
   let state: GameState = emptyState(DEFAULT_SETTINGS);
+  let lastGuess: string | null = null;
 
   const render = (): void => {
     if (state.phase === 'settings') {
@@ -43,6 +45,19 @@ const start = (): void => {
           },
           onStart: () => {
             state = startRound(state.settings);
+            lastGuess = null;
+            render();
+          },
+        }),
+      );
+    }
+
+    if (state.phase === 'playing') {
+      root.replaceChildren(
+        createPlayScreen(state, lastGuess, Date.now(), {
+          onSubmitGuess: (guess: string) => {
+            lastGuess = guess;
+            state = recordGuess(state, guess, Date.now());
             render();
           },
         }),

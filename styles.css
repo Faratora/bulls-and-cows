@@ -117,3 +117,114 @@ body {
 .settings__start:hover {
   background: var(--accent-hover);
 }
+
+/* --- Play screen --- */
+
+.play__info {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.play__stat {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.play__form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.play__input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 18px;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.2em;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.play__input:focus {
+  border-color: var(--accent);
+}
+
+.play__submit {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.play__submit:hover {
+  background: var(--accent-hover);
+}
+
+.play__status {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.play__status--warn {
+  color: #ffb84d;
+}
+
+.history {
+  border-top: 1px solid var(--disabled);
+  padding-top: 16px;
+}
+
+.history__title {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.history__empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.history__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--bg);
+  margin-bottom: 6px;
+}
+
+.history__index {
+  width: 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.history__guess {
+  font-family: 'Consolas', monospace;
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  min-width: 6em;
+}
+
+.history__score {
+  color: var(--muted);
+  font-size: 14px;
+}
