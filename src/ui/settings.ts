@@ -9,6 +9,7 @@ export interface SettingsActions {
   readonly onLengthChange: (length: SecretLength) => void;
   readonly onBaseChange: (base: NumericBase) => void;
   readonly onStart: () => void;
+  readonly onShowLeaderboard: () => void;
 }
 
 /** Builds an element with a class and optional text content. */
@@ -94,8 +95,15 @@ export const createSettingsScreen = (
   baseGroup.appendChild(baseRow);
 
   const startButton = createChoice('settings__start', 'Начать игру', false, false, actions.onStart);
+  const leaderboardButton = createChoice(
+    'settings__secondary',
+    'Таблица рекордов',
+    false,
+    false,
+    actions.onShowLeaderboard,
+  );
 
-  screen.append(title, subtitle, lengthGroup, baseGroup, startButton);
+  screen.append(title, subtitle, lengthGroup, baseGroup, startButton, leaderboardButton);
 
   return screen;
 };

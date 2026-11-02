@@ -1,8 +1,10 @@
-import { emptyState, recordGuess, startRound } from './game/state.js';
+import { attemptsOf, elapsedOf, emptyState, recordGuess, startRound } from './game/state.js';
 import type { GameSettings, GameState, NumericBase, SecretLength } from './game/types.js';
 import { createSettingsScreen } from './ui/settings.js';
 import { createPlayScreen } from './ui/play.js';
 import { createWinScreen } from './ui/win.js';
+import { createLeaderboardScreen } from './ui/leaderboard.js';
+import { recordWin } from './ui/leaderboard-storage.js';
 
 /**
  * Application controller. Owns the single game state reference and re-renders
@@ -29,8 +31,25 @@ const start = (): void => {
   const root = createAppRoot();
   let state: GameState = emptyState(DEFAULT_SETTINGS);
   let lastGuess: string | null = null;
+  // Non-round screens (the leaderboard) are tracked outside the game state.
+  let leaderboardFor: GameSettings | null = null;
+  // Guards against saving the same finished round more than once.
+  let savedRound: GameState | null = null;
 
   const render = (): void => {
+    if (leaderboardFor !== null) {
+      root.replaceChildren(
+        createLeaderboardScreen(leaderboardFor, {
+          onBack: () => {
+            leaderboardFor = null;
+            render();
+          },
+        }),
+      );
+
+      return;
+    }
+
     if (state.phase === 'settings') {
       root.replaceChildren(
         createSettingsScreen(state.settings, {
@@ -47,6 +66,11 @@ const start = (): void => {
           onStart: () => {
             state = startRound(state.settings);
             lastGuess = null;
+            savedRound = null;
+            render();
+          },
+          onShowLeaderboard: () => {
+            leaderboardFor = state.settings;
             render();
           },
         }),
@@ -66,6 +90,11 @@ const start = (): void => {
     }
 
     if (state.phase === 'won') {
+      if (savedRound !== state) {
+        // Persist exactly once per finished round, at the moment it is shown.
+        recordWin(state.settings, attemptsOf(state), elapsedOf(state, Date.now()));
+        savedRound = state;
+      }
       root.replaceChildren(
         createWinScreen(state, lastGuess, {
           onNewGame: () => {

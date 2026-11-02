@@ -269,3 +269,87 @@ body {
 .win__button:hover {
   background: var(--accent-hover);
 }
+
+/* --- Secondary button and leaderboard screen --- */
+
+.settings__secondary {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.settings__secondary:hover {
+  border-color: var(--accent);
+}
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.leaderboard__empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.leaderboard__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.leaderboard__rank {
+  width: 28px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.leaderboard__badge {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--disabled);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.leaderboard__attempts {
+  flex: 1;
+  font-size: 14px;
+}
+
+.leaderboard__time {
+  color: var(--muted);
+  font-size: 14px;
+  font-family: 'Consolas', monospace;
+}
+
+.leaderboard__back {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.leaderboard__back:hover {
+  border-color: var(--accent);
+}
