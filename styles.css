@@ -228,3 +228,44 @@ body {
   color: var(--muted);
   font-size: 14px;
 }
+
+/* --- Win screen --- */
+
+.win__secret {
+  font-family: 'Consolas', monospace;
+  font-size: 24px;
+  letter-spacing: 0.3em;
+  color: var(--accent-hover);
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.win__stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.win__stat {
+  color: var(--text);
+  font-size: 15px;
+}
+
+.win__button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.win__button:hover {
+  background: var(--accent-hover);
+}

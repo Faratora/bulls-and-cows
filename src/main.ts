@@ -2,6 +2,7 @@ import { emptyState, recordGuess, startRound } from './game/state.js';
 import type { GameSettings, GameState, NumericBase, SecretLength } from './game/types.js';
 import { createSettingsScreen } from './ui/settings.js';
 import { createPlayScreen } from './ui/play.js';
+import { createWinScreen } from './ui/win.js';
 
 /**
  * Application controller. Owns the single game state reference and re-renders
@@ -58,6 +59,19 @@ const start = (): void => {
           onSubmitGuess: (guess: string) => {
             lastGuess = guess;
             state = recordGuess(state, guess, Date.now());
+            render();
+          },
+        }),
+      );
+    }
+
+    if (state.phase === 'won') {
+      root.replaceChildren(
+        createWinScreen(state, lastGuess, {
+          onNewGame: () => {
+            // New round, same settings, no page reload.
+            state = emptyState(state.settings);
+            lastGuess = null;
             render();
           },
         }),
