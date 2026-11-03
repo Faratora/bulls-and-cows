@@ -82,8 +82,20 @@ export const createPlayScreen = (
   );
 
   const info = el('div', 'play__info');
-  info.appendChild(el('span', 'play__stat', `Попытки: ${attemptsOf(state)}`));
-  info.appendChild(el('span', 'play__stat', `Время: ${formatElapsed(elapsedOf(state, now))}`));
+  const timer = el('span', 'play__stat', `Время: ${formatElapsed(elapsedOf(state, now))}`);
+  info.append(el('span', 'play__stat', `Попытки: ${attemptsOf(state)}`), timer);
+
+  // Tick only the timer text so a live clock does not recreate the input and
+  // steal focus. The interval stops itself once the screen is replaced.
+  const timerId = window.setInterval(() => {
+    if (!screen.isConnected) {
+      window.clearInterval(timerId);
+
+      return;
+    }
+
+    timer.textContent = `Время: ${formatElapsed(elapsedOf(state, Date.now()))}`;
+  }, 1000);
 
   const form = el('div', 'play__form');
   const input = document.createElement('input');
