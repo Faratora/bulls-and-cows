@@ -99,6 +99,12 @@ body {
   font-weight: 600;
 }
 
+.settings__hint {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .settings__start {
   display: block;
   width: 100%;

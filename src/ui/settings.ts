@@ -1,3 +1,4 @@
+import { countPossibleSecrets } from '../game/count.js';
 import type { GameSettings, NumericBase, SecretLength } from '../game/types.js';
 
 /** Choices offered on the settings screen, in display order. */
@@ -85,14 +86,21 @@ export const createSettingsScreen = (
     16: 'hex (16)',
   };
   BASE_OPTIONS.forEach(base => {
-    const disabled = settings.length > base;
+    // Any radix can be chosen; changing it clamps the length to the alphabet.
     baseRow.appendChild(
-      createChoice('settings__option', BASE_LABELS[base], base === settings.base, disabled, () =>
+      createChoice('settings__option', BASE_LABELS[base], base === settings.base, false, () =>
         actions.onBaseChange(base),
       ),
     );
   });
   baseGroup.appendChild(baseRow);
+
+  const possibleSecrets = countPossibleSecrets(settings.length, settings.base);
+  const hint = el(
+    'p',
+    'settings__hint',
+    `Возможных секретов: ${possibleSecrets.toLocaleString('ru-RU')}`,
+  );
 
   const startButton = createChoice('settings__start', 'Начать игру', false, false, actions.onStart);
   const leaderboardButton = createChoice(
@@ -103,7 +111,7 @@ export const createSettingsScreen = (
     actions.onShowLeaderboard,
   );
 
-  screen.append(title, subtitle, lengthGroup, baseGroup, startButton, leaderboardButton);
+  screen.append(title, subtitle, lengthGroup, baseGroup, hint, startButton, leaderboardButton);
 
   return screen;
 };
