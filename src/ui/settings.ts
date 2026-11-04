@@ -63,7 +63,7 @@ export const createSettingsScreen = (
   );
 
   const lengthGroup = el('div', 'settings__group');
-  lengthGroup.appendChild(el('span', 'settings__label', 'Длина числа'));
+  lengthGroup.appendChild(el('span', 'settings__label', 'Длина секрета'));
   const lengthRow = el('div', 'settings__options');
   LENGTH_OPTIONS.forEach(length => {
     // A secret needs `length` unique digits, so the alphabet must be big enough.
@@ -94,6 +94,15 @@ export const createSettingsScreen = (
     );
   });
   baseGroup.appendChild(baseRow);
+
+  const DIGITS: Record<NumericBase, string> = {
+    2: '0 1',
+    8: '0 1 2 3 4 5 6 7',
+    10: '0 1 2 3 4 5 6 7 8 9',
+    16: '0 1 2 3 4 5 6 7 8 9 A B C D E F',
+  };
+  const digitsHint = el('p', 'settings__hint', `Цифры: ${DIGITS[settings.base]}`);
+  baseGroup.appendChild(digitsHint);
 
   const possibleSecrets = countPossibleSecrets(settings.length, settings.base);
   const hint = el(
