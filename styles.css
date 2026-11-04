@@ -325,11 +325,15 @@ body {
 }
 
 .leaderboard__badge {
+  /* Badges now differ within one list: keep the column width stable. */
+  flex-shrink: 0;
+  min-width: 62px;
   padding: 2px 10px;
   border-radius: 999px;
   background: var(--disabled);
   color: var(--text);
   font-size: 13px;
+  text-align: center;
 }
 
 .leaderboard__attempts {

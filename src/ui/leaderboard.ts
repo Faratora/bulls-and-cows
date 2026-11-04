@@ -30,23 +30,21 @@ const createRow = (record: LeaderboardRecord, rank: number): HTMLElement => {
 };
 
 /**
- * Leaderboard screen: the best results of the settings combination the player
- * just looked at. Records are read fresh from storage on every render.
+ * Leaderboard screen: the single shared list of the best results across every
+ * settings combination. Each row carries a badge with the settings the record
+ * was achieved in. Records are read fresh from storage on every render.
  */
-export const createLeaderboardScreen = (
-  settings: Parameters<typeof loadRecords>[0],
-  actions: LeaderboardActions,
-): HTMLElement => {
+export const createLeaderboardScreen = (actions: LeaderboardActions): HTMLElement => {
   const screen = el('section', 'screen screen--leaderboard');
   const title = el('h1', 'screen__title', 'Таблица рекордов');
   const subtitle = el(
     'p',
     'screen__subtitle',
-    `Лучшие результаты для ${formatSettings(settings)} (меньше попыток, затем меньше времени).`,
+    'Общий список лучших результатов: меньше попыток, затем меньше времени. Бейдж показывает настройки.',
   );
 
   const list = el('div', 'leaderboard');
-  const records = loadRecords(settings);
+  const records = loadRecords();
 
   if (records.length === 0) {
     list.appendChild(el('p', 'leaderboard__empty', 'Рекордов пока нет — сыграйте раунд!'));

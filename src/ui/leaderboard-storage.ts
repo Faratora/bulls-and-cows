@@ -1,9 +1,15 @@
 import { TOP_SIZE, addRecord, sortRecords } from '../game/leaderboard.js';
 import type { GameSettings, LeaderboardRecord, NumericBase, SecretLength } from '../game/types.js';
 
-/** Storage key of one per-settings leaderboard. */
-const storageKey = (settings: GameSettings): string =>
-  `bulls-and-cows:top:${settings.base}:${settings.length}`;
+/** Shared storage key for the unified leaderboard. */
+const STORAGE_KEY = 'bulls-and-cows:top';
+
+/** Prefix used by the old per-settings keys (kept for migration). */
+const OLD_KEY_PREFIX = 'bulls-and-cows:top:';
+
+/** Valid bases and lengths for runtime record validation. */
+const VALID_BASES = new Set<NumericBase>([2, 8, 10, 16]);
+const VALID_LENGTHS = new Set<SecretLength>([2, 3, 4, 5, 6]);
 
 /** Runtime check for a parsed record: the file may hold anything at all. */
 const isRecord = (value: unknown): value is LeaderboardRecord => {
@@ -14,8 +20,8 @@ const isRecord = (value: unknown): value is LeaderboardRecord => {
   const candidate = value as Record<string, unknown>;
 
   return (
-    typeof candidate.length === 'number' &&
-    typeof candidate.base === 'number' &&
+    VALID_LENGTHS.has(candidate.length as SecretLength) &&
+    VALID_BASES.has(candidate.base as NumericBase) &&
     typeof candidate.attempts === 'number' &&
     typeof candidate.elapsedMs === 'number' &&
     typeof candidate.finishedAt === 'number'
@@ -23,35 +29,47 @@ const isRecord = (value: unknown): value is LeaderboardRecord => {
 };
 
 /**
- * Reads the leaderboard of one settings combination. Corrupted or missing
- * data degrades to an empty list instead of breaking the round.
+ * Reads the unified leaderboard. If the new key is absent, falls back to the
+ * old per-settings keys and migrates everything into the new key.
  */
-export const loadRecords = (settings: GameSettings): LeaderboardRecord[] => {
-  const raw = window.localStorage.getItem(storageKey(settings));
+export const loadRecords = (): LeaderboardRecord[] => {
+  const raw = window.localStorage.getItem(STORAGE_KEY);
 
-  if (raw === null) {
-    return [];
-  }
-
-  try {
-    const parsed: unknown = JSON.parse(raw);
-
-    if (!Array.isArray(parsed)) {
+  if (raw !== null) {
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return sortRecords(parsed.filter(isRecord)).slice(0, TOP_SIZE);
+    } catch {
       return [];
     }
-
-    return sortRecords(parsed.filter(isRecord)).slice(0, TOP_SIZE);
-  } catch {
-    return [];
   }
+
+  // Migration: collect records from old per-settings keys.
+  const allRecords: LeaderboardRecord[] = [];
+
+  for (let i = 0; i < window.localStorage.length; i++) {
+    const key = window.localStorage.key(i);
+    if (key && key.startsWith(OLD_KEY_PREFIX) && key !== STORAGE_KEY) {
+      try {
+        const parsed: unknown = JSON.parse(window.localStorage.getItem(key) || '[]');
+        if (Array.isArray(parsed)) {
+          allRecords.push(...parsed.filter(isRecord));
+        }
+      } catch {
+        // Ignore corrupted old keys.
+      }
+    }
+  }
+
+  const migrated = sortRecords(allRecords).slice(0, TOP_SIZE);
+  saveRecords(migrated);
+  return migrated;
 };
 
-/** Persists the leaderboard of one settings combination. */
-export const saveRecords = (
-  settings: GameSettings,
-  records: readonly LeaderboardRecord[],
-): void => {
-  window.localStorage.setItem(storageKey(settings), JSON.stringify(records));
+/** Persists the unified leaderboard. */
+export const saveRecords = (records: readonly LeaderboardRecord[]): void => {
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
 };
 
 /** Builds a record from a finished round and appends it to storage. */
@@ -64,7 +82,7 @@ export const recordWin = (settings: GameSettings, attempts: number, elapsedMs: n
     finishedAt: Date.now(),
   };
 
-  saveRecords(settings, addRecord(loadRecords(settings), entry));
+  saveRecords(addRecord(loadRecords(), entry));
 };
 
 /** Human-readable settings badge, e.g. "dec · 4". */
