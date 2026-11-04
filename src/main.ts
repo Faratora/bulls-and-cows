@@ -33,7 +33,7 @@ const start = (): void => {
   let state: GameState = emptyState(DEFAULT_SETTINGS);
   let lastGuess: string | null = null;
   // Non-round screens (the leaderboard) are tracked outside the game state.
-  let leaderboardFor: GameSettings | null = null;
+  let showingLeaderboard = false;
   // Guards against saving the same finished round more than once.
   let savedRound: GameState | null = null;
   // Live round clock. Owned here because only this closure sees the current
@@ -51,11 +51,11 @@ const start = (): void => {
     // Every render rebuilds the screen, so the old clock must stop first.
     stopTimer();
 
-    if (leaderboardFor !== null) {
+    if (showingLeaderboard) {
       root.replaceChildren(
-        createLeaderboardScreen(leaderboardFor, {
+        createLeaderboardScreen({
           onBack: () => {
-            leaderboardFor = null;
+            showingLeaderboard = false;
             render();
           },
         }),
@@ -84,7 +84,7 @@ const start = (): void => {
             render();
           },
           onShowLeaderboard: () => {
-            leaderboardFor = state.settings;
+            showingLeaderboard = true;
             render();
           },
         }),
