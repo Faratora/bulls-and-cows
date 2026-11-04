@@ -6,5 +6,6 @@ export default defineConfig({
     environment: 'node',
     // The tooling setup commit has no tests yet: an empty suite must pass.
     passWithNoTests: true,
+    isolate: false,
   },
 });
