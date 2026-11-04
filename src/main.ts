@@ -2,7 +2,7 @@ import { attemptsOf, elapsedOf, emptyState, recordGuess, startRound } from './ga
 import { isValidGuess } from './game/guess.js';
 import type { GameSettings, GameState, NumericBase, SecretLength } from './game/types.js';
 import { createSettingsScreen } from './ui/settings.js';
-import { createPlayScreen } from './ui/play.js';
+import { createPlayScreen, formatElapsed } from './ui/play.js';
 import { createWinScreen } from './ui/win.js';
 import { createLeaderboardScreen } from './ui/leaderboard.js';
 import { recordWin } from './ui/leaderboard-storage.js';
@@ -36,8 +36,21 @@ const start = (): void => {
   let leaderboardFor: GameSettings | null = null;
   // Guards against saving the same finished round more than once.
   let savedRound: GameState | null = null;
+  // Live round clock. Owned here because only this closure sees the current
+  // state object; the screen only hands over the element to write into.
+  let timerId = -1;
+
+  const stopTimer = (): void => {
+    if (timerId !== -1) {
+      window.clearInterval(timerId);
+      timerId = -1;
+    }
+  };
 
   const render = (): void => {
+    // Every render rebuilds the screen, so the old clock must stop first.
+    stopTimer();
+
     if (leaderboardFor !== null) {
       root.replaceChildren(
         createLeaderboardScreen(leaderboardFor, {
@@ -79,23 +92,27 @@ const start = (): void => {
     }
 
     if (state.phase === 'playing') {
-      root.replaceChildren(
-        createPlayScreen(state, lastGuess, Date.now(), {
-          onSubmitGuess: (guess: string) => {
-            const previous = state;
+      const play = createPlayScreen(state, lastGuess, Date.now(), {
+        onSubmitGuess: (guess: string) => {
+          const previous = state;
 
-            // Invalid guesses (wrong length or repeated digits) only show a hint.
-            if (isValidGuess(guess, state.settings.length, state.settings.base)) {
-              state = recordGuess(state, guess, Date.now());
-            }
+          // Invalid guesses (wrong length or repeated digits) only show a hint.
+          if (isValidGuess(guess, state.settings.length, state.settings.base)) {
+            state = recordGuess(state, guess, Date.now());
+          }
 
-            // Keep the guess for a hint only when it was rejected. A recorded
-            // guess is already in history and must not be reported as a duplicate.
-            lastGuess = state === previous ? guess : null;
-            render();
-          },
-        }),
-      );
+          // Keep the guess for a hint only when it was rejected. A recorded
+          // guess is already in history and must not be reported as a duplicate.
+          lastGuess = state === previous ? guess : null;
+          render();
+        },
+      });
+      root.replaceChildren(play.element);
+
+      // The controller owns the interval so it always sees the current state.
+      timerId = window.setInterval(() => {
+        play.timer.textContent = `Время: ${formatElapsed(elapsedOf(state, Date.now()))}`;
+      }, 1000);
     }
 
     if (state.phase === 'won') {

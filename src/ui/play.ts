@@ -64,13 +64,18 @@ const createStatus = (state: GameState, lastGuess: string | null): HTMLElement =
  * Play screen: guess input filtered by the curried digit validator, attempt
  * history and a live timer. Pure function of the current state plus the last
  * submitted guess, which the controller passes separately.
+ *
+ * The timer element is returned so the controller can own the ticking
+ * interval: only the controller sees the current state object, which is
+ * replaced on every render. A stale reference captured here would freeze the
+ * clock at the moment the screen was built.
  */
 export const createPlayScreen = (
   state: GameState,
   lastGuess: string | null,
   now: number,
   actions: PlayActions,
-): HTMLElement => {
+): { element: HTMLElement; timer: HTMLElement } => {
   const isDigit = createDigitValidator(state.settings.base);
 
   const screen = el('section', 'screen screen--play');
@@ -84,18 +89,6 @@ export const createPlayScreen = (
   const info = el('div', 'play__info');
   const timer = el('span', 'play__stat', `Время: ${formatElapsed(elapsedOf(state, now))}`);
   info.append(el('span', 'play__stat', `Попытки: ${attemptsOf(state)}`), timer);
-
-  // Tick only the timer text so a live clock does not recreate the input and
-  // steal focus. The interval stops itself once the screen is replaced.
-  const timerId = window.setInterval(() => {
-    if (!screen.isConnected) {
-      window.clearInterval(timerId);
-
-      return;
-    }
-
-    timer.textContent = `Время: ${formatElapsed(elapsedOf(state, Date.now()))}`;
-  }, 1000);
 
   const form = el('div', 'play__form');
   const input = document.createElement('input');
@@ -149,5 +142,5 @@ export const createPlayScreen = (
 
   screen.append(title, meta, info, form, createStatus(state, lastGuess), history);
 
-  return screen;
+  return { element: screen, timer };
 };
