@@ -24,11 +24,10 @@ src/
 │   ├── play.ts          # экран игры
 │   ├── win.ts           # экран победы
 │   ├── leaderboard.ts   # экран таблицы рекордов
-│   ├── leaderboard-storage.ts  # адаптер localStorage
-│   └── play.ts содержит formatElapsed — общий форматтер времени
+│   ├── leaderboard-storage.ts   # адаптер localStorage
 ├── utils/
 │   └── memoize.ts       # самописная мемоизация функции двух аргументов
-└── main.ts         # контроллер: единственный владелец мутируемой ссылки state
+└── main.ts         # контроллер: владелец ссылки state и интервала таймера
 ```
 
 Зависимости направлены строго вниз: `ui → game → (digits, types)`.
@@ -45,10 +44,10 @@ src/
 | `Secret`            | `string`                                                  | `length` уникальных цифр алфавита base; **строка, а не число** — ведущий `0` значим |
 | `Guess`             | `string`                                                  | та же форма, проверяется `isValidGuess`                                             |
 | `Score`             | `bulls: number; cows: number`                             | `bulls + cows ≤ length`                                                             |
-| `HistoryEntry`      | `guess: Guess; score: Score; at: number`                  | неизменяемая запись попытки                                                         |
+| `HistoryEntry`      | `guess: Guess; score: Score`                              | неизменяемая запись попытки                                                         |
 | `GameSettings`      | `length: SecretLength; base: NumericBase`                 | `length ≤ base`, иначе 0 возможных секретов                                         |
 | `GameState`         | `phase, settings, secret, history, startedAt, finishedAt` | `phase ∈ 'settings' \| 'playing' \| 'won'`                                          |
-| `LeaderboardRecord` | `settings, attempts, elapsedMs, finishedAt`               | сортировка в `leaderboard.ts`                                                       |
+| `LeaderboardRecord` | `length, base, attempts, elapsedMs, finishedAt`           | сортировка в `leaderboard.ts`                                                       |
 
 ### Ключевое решение: секрет — строка, а не число
 
@@ -148,23 +147,24 @@ P(base, length)     = base · P(base−1, length−1)
 времени), стабильная `sortRecords` без мутации входа, `addRecord`
 (добавить → отсортировать → обрезать до `TOP_SIZE = 10`, вытесняются
 худшие, а не старые). Персистентность — адаптер
-`src/ui/leaderboard-storage.ts`: отдельный ключ localStorage на каждую
-комбинацию настроек (`bulls-and-cows:top:{base}:{length}`), защита от
-битого JSON деградацией в пустой список.
+`src/ui/leaderboard-storage.ts`: один общий ключ `bulls-and-cows:top`,
+перенос (миграция) из старых ключей при первом запуске, защита от
+битого JSON деградацией в пустой список. Каждая запись содержит бейдж
+настроек (`base · length`), который отображается в строке таблицы.
 
 ## 5. Сложность (Big O)
 
 `L` — длина секрета, `B` — основание, `H` — размер истории.
 
-| Функция                     | Файл             | Сложность                               | Обоснование                                                                                     |
-| --------------------------- | ---------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `createDigitValidator`      | `digits.ts`      | **O(1)** на вызов                       | `indexOf` по 16-символьной константе, фиксированная граница                                     |
-| `isValidGuess`              | `guess.ts`       | **O(L)**                                | один проход `every` + построение `Set` из L элементов                                           |
-| `evaluateGuess`             | `score.ts`       | **O(L)**                                | `reduce` по позициям + `Set` из L цифр: обе фазы линейны                                        |
-| `generateSecret`            | `secret.ts`      | **O(L·B)**                              | L шагов рекурсии, каждый — `splice`-подобное копирование пула ≤ B цифр; для L ≤ 6 это константа |
-| `countPossibleSecrets`      | `count.ts`       | **O(L)** первый вызов, **O(1)** из кэша | рекурсия глубиной L; `memoize2` сводит повторные вызовы к lookup `Map`                          |
-| `recordGuess`               | `state.ts`       | **O(H)**                                | копия истории + проверка дубликата `some` по истории                                            |
-| `sortRecords` / `addRecord` | `leaderboard.ts` | **O(N log N)**                          | сортировка ≤ `TOP_SIZE + 1` записей, N ≤ 11 — практически константа                             |
+| Функция                     | Файл             | Сложность                               | Обоснование                                                                |
+| --------------------------- | ---------------- | --------------------------------------- | -------------------------------------------------------------------------- |
+| `createDigitValidator`      | `digits.ts`      | **O(1)** на вызов                       | `indexOf` по 16-символьной константе, фиксированная граница                |
+| `isValidGuess`              | `guess.ts`       | **O(L)**                                | один проход `every` + построение `Set` из L элементов                      |
+| `evaluateGuess`             | `score.ts`       | **O(L)**                                | `reduce` по позициям + `Set` из L цифр: обе фазы линейны                   |
+| `generateSecret`            | `secret.ts`      | **O(L·B)**                              | L шагов рекурсии, каждый — `filter` пула ≤ B цифр; для L ≤ 6 это константа |
+| `countPossibleSecrets`      | `count.ts`       | **O(L)** первый вызов, **O(1)** из кэша | рекурсия глубиной L; `memoize2` сводит повторные вызовы к lookup `Map`     |
+| `recordGuess`               | `state.ts`       | **O(H)**                                | копия истории + проверка дубликата `some` по истории                       |
+| `sortRecords` / `addRecord` | `leaderboard.ts` | **O(N log N)**                          | сортировка ≤ `TOP_SIZE + 1` записей, N ≤ 11 — практически константа        |
 
 Максимальные размеры: `L ≤ 6`, `B ≤ 16`, поэтому все «линейные»
 оценки фактически константны — ядро не имеет узких мест производительности.
@@ -179,9 +179,9 @@ P(base, length)     = base · P(base−1, length−1)
 | **Каррирование и фабрики**             | `createDigitValidator(base)`, `createCountPossibleSecrets`, `memoize2` — переиспользование частично применённых функций                           |
 | **Методы массивов вместо циклов**      | `every`, `reduce`, `some`, `filter`, `map` по всему ядру; явных `for` нет                                                                         |
 | **Разделение слоёв**                   | `game/` не знает про DOM; `ui/` не содержит игровой логики — только построение узлов и колбэки                                                    |
-| **Именованные константы**              | `DIGIT_ALPHABET`, `TOP_SIZE`, `LENGTH_CHOICES`, `BASE_LABELS` — никакой «магии» в тексте                                                          |
+| **Именованные константы**              | `DIGIT_ALPHABET`, `TOP_SIZE`, `LENGTH_OPTIONS`, `BASE_LABELS` — никакой «магии» в тексте                                                          |
 | **Один уровень абстракции на функцию** | `isValidGuess` композиция из трёх маленьких предикатов; `recordGuess` — один переход за вызов                                                     |
-| **Тестируемость**                      | 151 юнит-тест: детерминизм через инъекцию `RandomSource`, счётчик вызовов для мемоизации, проверки отсутствия мутаций аргументов                  |
+| **Тестируемость**                      | 137 юнит-тестов: детерминизм через инъекцию `RandomSource`, счётчик вызовов для мемоизации, проверки отсутствия мутаций аргументов                |
 
 ## 7. Следствия для расширяемости
 
