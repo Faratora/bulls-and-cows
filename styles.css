@@ -212,6 +212,25 @@ body {
   font-size: 13px;
 }
 
+/* Alphabet of the chosen radix, rendered in monospace next to a plain label. */
+.play__digits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.play__digits-label {
+  color: var(--muted);
+}
+
+.play__digits-value {
+  color: var(--text);
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.15em;
+}
+
 .play__status--warn {
   color: #ffb84d;
 }

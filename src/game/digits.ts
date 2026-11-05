@@ -19,3 +19,10 @@ export const createDigitValidator =
 
     return index >= 0 && index < base;
   };
+
+/**
+ * Digits available in the game for a radix, space-separated and uppercase for
+ * hex, e.g. base 10 gives "0 1 2 3 4 5 6 7 8 9".
+ */
+export const digitsOfBase = (base: NumericBase): string =>
+  DIGIT_ALPHABET.slice(0, base).toUpperCase().split('').join(' ');
