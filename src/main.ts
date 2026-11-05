@@ -106,6 +106,12 @@ const start = (): void => {
           lastGuess = state === previous ? guess : null;
           render();
         },
+        onNewGame: () => {
+          state = startRound(state.settings);
+          lastGuess = null;
+          savedRound = null;
+          render();
+        },
       });
       root.replaceChildren(play.element);
 

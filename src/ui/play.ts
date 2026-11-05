@@ -6,6 +6,7 @@ import { createDigitValidator } from '../game/digits.js';
 /** Callbacks the play screen invokes on user interaction. */
 export interface PlayActions {
   readonly onSubmitGuess: (guess: Guess) => void;
+  readonly onNewGame: () => void;
 }
 
 const el = (tag: string, className: string, text = ''): HTMLElement => {
@@ -79,7 +80,16 @@ export const createPlayScreen = (
   const isDigit = createDigitValidator(state.settings.base);
 
   const screen = el('section', 'screen screen--play');
-  const title = el('h1', 'screen__title', 'Bulls and Cows');
+
+  // Title row: the heading plus a button that restarts the round in place.
+  const header = el('div', 'screen__header');
+  header.appendChild(el('h1', 'screen__title', 'Bulls and Cows'));
+
+  const newGameButton = el('button', 'screen__new-game', 'Новая игра') as HTMLButtonElement;
+  newGameButton.type = 'button';
+  newGameButton.addEventListener('click', actions.onNewGame);
+  header.appendChild(newGameButton);
+
   const meta = el(
     'p',
     'screen__subtitle',
@@ -140,7 +150,7 @@ export const createPlayScreen = (
     });
   }
 
-  screen.append(title, meta, info, form, createStatus(state, lastGuess), history);
+  screen.append(header, meta, info, form, createStatus(state, lastGuess), history);
 
   return { element: screen, timer };
 };
