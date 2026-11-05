@@ -43,6 +43,35 @@ body {
   font-size: 28px;
 }
 
+/* Title row: heading on the left, secondary actions on the right. */
+.screen__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.screen__header .screen__title {
+  margin: 0;
+}
+
+.screen__new-game {
+  padding: 8px 14px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.screen__new-game:hover {
+  border-color: var(--accent);
+}
+
 .screen__subtitle {
   margin: 0 0 24px;
   color: var(--muted);
@@ -100,9 +129,9 @@ body {
 }
 
 .settings__hint {
-  margin: 0 0 16px;
+  margin: 16px 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .settings__start {
