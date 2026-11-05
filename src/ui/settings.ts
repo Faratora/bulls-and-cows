@@ -1,5 +1,6 @@
 import { countPossibleSecrets } from '../game/count.js';
 import { digitsOfBase } from '../game/digits.js';
+import { BASE_LABELS } from './base-labels.js';
 import type { GameSettings, NumericBase, SecretLength } from '../game/types.js';
 
 /** Choices offered on the settings screen, in display order. */
@@ -80,12 +81,6 @@ export const createSettingsScreen = (
   const baseGroup = el('div', 'settings__group');
   baseGroup.appendChild(el('span', 'settings__label', 'Система счисления'));
   const baseRow = el('div', 'settings__options');
-  const BASE_LABELS: Record<NumericBase, string> = {
-    2: 'bin (2)',
-    8: 'oct (8)',
-    10: 'dec (10)',
-    16: 'hex (16)',
-  };
   BASE_OPTIONS.forEach(base => {
     // Any radix can be chosen; changing it clamps the length to the alphabet.
     baseRow.appendChild(
