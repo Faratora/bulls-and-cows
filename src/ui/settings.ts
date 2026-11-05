@@ -1,4 +1,5 @@
 import { countPossibleSecrets } from '../game/count.js';
+import { digitsOfBase } from '../game/digits.js';
 import type { GameSettings, NumericBase, SecretLength } from '../game/types.js';
 
 /** Choices offered on the settings screen, in display order. */
@@ -95,13 +96,7 @@ export const createSettingsScreen = (
   });
   baseGroup.appendChild(baseRow);
 
-  const DIGITS: Record<NumericBase, string> = {
-    2: '0 1',
-    8: '0 1 2 3 4 5 6 7',
-    10: '0 1 2 3 4 5 6 7 8 9',
-    16: '0 1 2 3 4 5 6 7 8 9 A B C D E F',
-  };
-  const digitsHint = el('p', 'settings__hint', `Цифры: ${DIGITS[settings.base]}`);
+  const digitsHint = el('p', 'settings__hint', `Цифры в игре: ${digitsOfBase(settings.base)}`);
   baseGroup.appendChild(digitsHint);
 
   const possibleSecrets = countPossibleSecrets(settings.length, settings.base);
