@@ -79,6 +79,25 @@ body {
   line-height: 1.5;
 }
 
+/* Shared hint with the digits of the chosen radix (settings and play screens). */
+.digits-hint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+.digits-hint__label {
+  color: var(--muted);
+}
+
+.digits-hint__value {
+  color: var(--text);
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.15em;
+}
+
 .settings__group {
   margin-bottom: 20px;
 }
@@ -210,25 +229,6 @@ body {
   margin: 0 0 20px;
   color: var(--muted);
   font-size: 13px;
-}
-
-/* Alphabet of the chosen radix, rendered in monospace next to a plain label. */
-.play__digits {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 16px;
-  font-size: 14px;
-}
-
-.play__digits-label {
-  color: var(--muted);
-}
-
-.play__digits-value {
-  color: var(--text);
-  font-family: 'Consolas', monospace;
-  letter-spacing: 0.15em;
 }
 
 .play__status--warn {
