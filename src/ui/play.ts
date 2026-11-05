@@ -1,7 +1,8 @@
 import { isValidGuess } from '../game/guess.js';
 import { attemptsOf, elapsedOf, isDuplicateGuess } from '../game/state.js';
 import type { GameSettings, GameState, Guess, SecretLength } from '../game/types.js';
-import { createDigitValidator, digitsOfBase } from '../game/digits.js';
+import { createDigitValidator } from '../game/digits.js';
+import { createDigitsHint } from './digits-hint.js';
 import { BASE_LABELS } from './base-labels.js';
 
 /** Callbacks the play screen invokes on user interaction. */
@@ -114,11 +115,7 @@ export const createPlayScreen = (
   info.append(el('span', 'play__stat', `Попытки: ${attemptsOf(state)}`), timer);
 
   // The alphabet picked on the settings screen, shown while guessing.
-  const digits = el('p', 'play__digits');
-  digits.append(
-    el('span', 'play__digits-label', 'Цифры в игре:'),
-    el('span', 'play__digits-value', digitsOfBase(state.settings.base)),
-  );
+  const digits = createDigitsHint(state.settings.base);
 
   const form = el('div', 'play__form');
   const input = document.createElement('input');
