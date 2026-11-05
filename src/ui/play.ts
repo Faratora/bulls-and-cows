@@ -1,7 +1,8 @@
 import { isValidGuess } from '../game/guess.js';
 import { attemptsOf, elapsedOf, isDuplicateGuess } from '../game/state.js';
-import type { GameState, Guess } from '../game/types.js';
+import type { GameSettings, GameState, Guess, SecretLength } from '../game/types.js';
 import { createDigitValidator, digitsOfBase } from '../game/digits.js';
+import { BASE_LABELS } from './base-labels.js';
 
 /** Callbacks the play screen invokes on user interaction. */
 export interface PlayActions {
@@ -44,21 +45,33 @@ const createHistoryRow = (
   return row;
 };
 
-/** Status hint under the input: duplicates, invalid input or a normal prompt. */
+/**
+ * Russian agrees the noun with the numeral: "2 разные цифры" but "5 разных цифр".
+ */
+const digitsWord = (length: SecretLength): string => (length <= 4 ? 'разные цифры' : 'разных цифр');
+
+/** Prompt naming the length and the numeral system chosen on the settings screen. */
+const guessPrompt = (settings: GameSettings): string =>
+  `Введите ${settings.length} ${digitsWord(settings.length)} системы счисления ` +
+  `${BASE_LABELS[settings.base]}.`;
+
+/**
+ * Status hint under the input: duplicates, invalid input or a normal prompt.
+ * The prompt names the numeral system picked on the settings screen, so the
+ * player knows which digits are allowed without going back to it.
+ */
 const createStatus = (state: GameState, lastGuess: string | null): HTMLElement => {
   if (lastGuess !== null && isDuplicateGuess(state, lastGuess)) {
     return el('p', 'play__status play__status--warn', 'Эта попытка уже была.');
   }
 
+  const prompt = guessPrompt(state.settings);
+
   if (lastGuess !== null && !isValidGuess(lastGuess, state.settings.length, state.settings.base)) {
-    return el(
-      'p',
-      'play__status play__status--warn',
-      `Введите ${state.settings.length} разных цифр системы счисления.`,
-    );
+    return el('p', 'play__status play__status--warn', prompt);
   }
 
-  return el('p', 'play__status', `Введите ${state.settings.length} разных цифр системы счисления.`);
+  return el('p', 'play__status', prompt);
 };
 
 /**
