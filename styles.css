@@ -24,6 +24,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
 }
 
 #app {
@@ -57,12 +58,10 @@ body {
 }
 
 .screen__new-game {
-  padding: 8px 14px;
+  padding: 8px 16px;
   border: 1px solid var(--disabled);
   border-radius: 8px;
   background: transparent;
-  color: var(--text);
-  font-size: 14px;
   white-space: nowrap;
   cursor: pointer;
   transition: border-color 0.15s;
@@ -73,19 +72,19 @@ body {
 }
 
 .screen__subtitle {
-  margin: 0 0 24px;
+  margin: 0 0 20px;
   color: var(--muted);
-  font-size: 14px;
   line-height: 1.5;
 }
 
-/* Shared hint with the digits of the chosen radix (settings and play screens). */
+/*
+ * Shared hint with the digits of the chosen radix (settings and play screens).
+ * Inline spans, not flex: the label and the monospace value must sit on the
+ * same text baseline, and the row must wrap like ordinary text.
+ */
 .digits-hint {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
   margin: 16px 0;
-  font-size: 14px;
+  line-height: 1.5;
 }
 
 .digits-hint__label {
@@ -93,7 +92,6 @@ body {
 }
 
 .digits-hint__value {
-  color: var(--text);
   font-family: 'Consolas', monospace;
   letter-spacing: 0.15em;
 }
@@ -106,7 +104,6 @@ body {
   display: block;
   margin-bottom: 8px;
   color: var(--muted);
-  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -122,8 +119,6 @@ body {
   border: 1px solid var(--disabled);
   border-radius: 8px;
   background: transparent;
-  color: var(--text);
-  font-size: 15px;
   cursor: pointer;
   transition:
     border-color 0.15s,
@@ -150,7 +145,6 @@ body {
 .settings__hint {
   margin: 16px 0;
   color: var(--muted);
-  font-size: 15px;
 }
 
 .settings__start {
@@ -161,8 +155,7 @@ body {
   border: none;
   border-radius: 8px;
   background: var(--accent);
-  color: #fff;
-  font-size: 16px;
+  color: var(--text);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
@@ -182,7 +175,6 @@ body {
 
 .play__stat {
   color: var(--muted);
-  font-size: 14px;
 }
 
 .play__form {
@@ -214,8 +206,7 @@ body {
   border: none;
   border-radius: 8px;
   background: var(--accent);
-  color: #fff;
-  font-size: 15px;
+  color: var(--text);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
@@ -228,7 +219,6 @@ body {
 .play__status {
   margin: 0 0 20px;
   color: var(--muted);
-  font-size: 13px;
 }
 
 .play__status--warn {
@@ -244,7 +234,6 @@ body {
   display: block;
   margin-bottom: 8px;
   color: var(--muted);
-  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -252,7 +241,6 @@ body {
 .history__empty {
   margin: 0;
   color: var(--muted);
-  font-size: 14px;
 }
 
 .history__row {
@@ -262,25 +250,22 @@ body {
   padding: 8px 12px;
   border-radius: 8px;
   background: var(--bg);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .history__index {
   width: 24px;
   color: var(--muted);
-  font-size: 13px;
 }
 
 .history__guess {
   font-family: 'Consolas', monospace;
-  font-size: 16px;
   letter-spacing: 0.2em;
   min-width: 6em;
 }
 
 .history__score {
   color: var(--muted);
-  font-size: 14px;
 }
 
 /* --- Win screen --- */
@@ -298,12 +283,11 @@ body {
   display: flex;
   justify-content: center;
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .win__stat {
   color: var(--text);
-  font-size: 15px;
 }
 
 .win__button {
@@ -313,8 +297,7 @@ body {
   border: none;
   border-radius: 8px;
   background: var(--accent);
-  color: #fff;
-  font-size: 16px;
+  color: var(--text);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
@@ -335,7 +318,6 @@ body {
   border-radius: 8px;
   background: transparent;
   color: var(--text);
-  font-size: 15px;
   cursor: pointer;
   transition: border-color 0.15s;
 }
@@ -354,7 +336,6 @@ body {
 .leaderboard__empty {
   margin: 0;
   color: var(--muted);
-  font-size: 14px;
 }
 
 .leaderboard__row {
@@ -369,7 +350,6 @@ body {
 .leaderboard__rank {
   width: 28px;
   color: var(--muted);
-  font-size: 14px;
 }
 
 .leaderboard__badge {
@@ -380,18 +360,15 @@ body {
   border-radius: 999px;
   background: var(--disabled);
   color: var(--text);
-  font-size: 13px;
   text-align: center;
 }
 
 .leaderboard__attempts {
   flex: 1;
-  font-size: 14px;
 }
 
 .leaderboard__time {
   color: var(--muted);
-  font-size: 14px;
   font-family: 'Consolas', monospace;
 }
 
@@ -403,7 +380,6 @@ body {
   border-radius: 8px;
   background: transparent;
   color: var(--text);
-  font-size: 15px;
   cursor: pointer;
   transition: border-color 0.15s;
 }
