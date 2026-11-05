@@ -1,5 +1,5 @@
 import { countPossibleSecrets } from '../game/count.js';
-import { digitsOfBase } from '../game/digits.js';
+import { createDigitsHint } from './digits-hint.js';
 import { BASE_LABELS } from './base-labels.js';
 import type { GameSettings, NumericBase, SecretLength } from '../game/types.js';
 
@@ -91,8 +91,7 @@ export const createSettingsScreen = (
   });
   baseGroup.appendChild(baseRow);
 
-  const digitsHint = el('p', 'settings__hint', `Цифры в игре: ${digitsOfBase(settings.base)}`);
-  baseGroup.appendChild(digitsHint);
+  baseGroup.appendChild(createDigitsHint(settings.base));
 
   const possibleSecrets = countPossibleSecrets(settings.length, settings.base);
   const hint = el(
