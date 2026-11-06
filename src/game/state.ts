@@ -17,6 +17,7 @@ export const emptyState = (settings: GameSettings): GameState => ({
   secret: '',
   history: [],
   startedAt: 0,
+  firstGuessAt: 0,
   finishedAt: null,
 });
 
@@ -34,15 +35,21 @@ export const startRound = (
   secret: generateSecret(settings.length, settings.base, random),
   history: [],
   startedAt,
+  firstGuessAt: 0,
   finishedAt: null,
 });
 
 /** Attempts are simply the number of history entries. */
 export const attemptsOf = (state: GameState): number => state.history.length;
 
-/** Elapsed time keeps growing while playing and freezes at the win moment. */
-export const elapsedOf = (state: GameState, now: number): number =>
-  (state.finishedAt ?? now) - state.startedAt;
+/** Elapsed time is zero before the first guess, then grows from the first guess. */
+export const elapsedOf = (state: GameState, now: number): number => {
+  if (state.firstGuessAt === 0) {
+    return 0;
+  }
+
+  return (state.finishedAt ?? now) - state.firstGuessAt;
+};
 
 /** The round is won as soon as the phase switched to `won`. */
 export const isWon = (state: GameState): boolean => state.phase === 'won';
@@ -72,6 +79,7 @@ export const recordGuess = (state: GameState, guess: Guess, now: number): GameSt
     ...state,
     history,
     phase: won ? 'won' : state.phase,
+    firstGuessAt: state.history.length === 0 ? now : state.firstGuessAt,
     finishedAt: won ? now : state.finishedAt,
   };
 };

@@ -37,17 +37,17 @@ src/
 
 Все структуры объявлены в `src/game/types.ts` как `readonly`-типы.
 
-| Тип                 | Поля                                                      | Инварианты                                                                          |
-| ------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `NumericBase`       | `2 \| 8 \| 10 \| 16`                                      | основание системы счисления                                                         |
-| `SecretLength`      | `2..6`                                                    | длина секрета и попытки                                                             |
-| `Secret`            | `string`                                                  | `length` уникальных цифр алфавита base; **строка, а не число** — ведущий `0` значим |
-| `Guess`             | `string`                                                  | та же форма, проверяется `isValidGuess`                                             |
-| `Score`             | `bulls: number; cows: number`                             | `bulls + cows ≤ length`                                                             |
-| `HistoryEntry`      | `guess: Guess; score: Score`                              | неизменяемая запись попытки                                                         |
-| `GameSettings`      | `length: SecretLength; base: NumericBase`                 | `length ≤ base`, иначе 0 возможных секретов                                         |
-| `GameState`         | `phase, settings, secret, history, startedAt, finishedAt` | `phase ∈ 'settings' \| 'playing' \| 'won'`                                          |
-| `LeaderboardRecord` | `length, base, attempts, elapsedMs, finishedAt`           | сортировка в `leaderboard.ts`                                                       |
+| Тип                 | Поля                                                                    | Инварианты                                                                          |
+| ------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `NumericBase`       | `2 \| 8 \| 10 \| 16`                                                    | основание системы счисления                                                         |
+| `SecretLength`      | `2..6`                                                                  | длина секрета и попытки                                                             |
+| `Secret`            | `string`                                                                | `length` уникальных цифр алфавита base; **строка, а не число** — ведущий `0` значим |
+| `Guess`             | `string`                                                                | та же форма, проверяется `isValidGuess`                                             |
+| `Score`             | `bulls: number; cows: number`                                           | `bulls + cows ≤ length`                                                             |
+| `HistoryEntry`      | `guess: Guess; score: Score`                                            | неизменяемая запись попытки                                                         |
+| `GameSettings`      | `length: SecretLength; base: NumericBase`                               | `length ≤ base`, иначе 0 возможных секретов                                         |
+| `GameState`         | `phase, settings, secret, history, startedAt, firstGuessAt, finishedAt` | `phase ∈ 'settings' \| 'playing' \| 'won'`                                          |
+| `LeaderboardRecord` | `length, base, attempts, elapsedMs, finishedAt`                         | сортировка в `leaderboard.ts`                                                       |
 
 ### Ключевое решение: секрет — строка, а не число
 
@@ -135,11 +135,13 @@ P(base, length)     = base · P(base−1, length−1)
 - `startRound(settings, random, startedAt)` — копия настроек,
   `generateSecret`, timestamp старта.
 - `recordGuess(state, guess, now)` — новая запись истории в свежем
-  массиве; при `bulls === length` фаза переключается в `'won'` и
+  массиве; при первом ходе фиксируется `firstGuessAt` (время старта
+  таймера); при `bulls === length` фаза переключается в `'won'` и
   фиксируется `finishedAt`. Дубликаты и попытки после победы возвращают
   тот же объект состояния — переходов нет.
-- `attemptsOf` = `history.length`; `elapsedOf` растёт во время игры и
-  замирает на `finishedAt`.
+- `attemptsOf` = `history.length`; `elapsedOf` начинается с нулевого
+  времени до первого хода и растёт от `firstGuessAt`, замирая на
+  `finishedAt`.
 
 ### 4.7. Таблица рекордов — `src/game/leaderboard.ts`
 

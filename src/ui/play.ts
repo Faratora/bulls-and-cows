@@ -104,12 +104,6 @@ export const createPlayScreen = (
   newGameButton.addEventListener('click', actions.onNewGame);
   header.appendChild(newGameButton);
 
-  const meta = el(
-    'p',
-    'screen__subtitle',
-    `Длина ${state.settings.length} · основание ${state.settings.base}`,
-  );
-
   const info = el('div', 'play__info');
   const timer = el('span', 'play__stat', `Время: ${formatElapsed(elapsedOf(state, now))}`);
   info.append(el('span', 'play__stat', `Попытки: ${attemptsOf(state)}`), timer);
@@ -167,7 +161,7 @@ export const createPlayScreen = (
     });
   }
 
-  screen.append(header, meta, info, digits, form, createStatus(state, lastGuess), history);
+  screen.append(header, info, digits, form, createStatus(state, lastGuess), history);
 
   return { element: screen, timer };
 };

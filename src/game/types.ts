@@ -49,6 +49,7 @@ export interface GameState {
   readonly secret: Secret;
   readonly history: readonly HistoryEntry[];
   readonly startedAt: number;
+  readonly firstGuessAt: number;
   readonly finishedAt: number | null;
 }
 
