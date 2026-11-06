@@ -23,7 +23,6 @@ export const createDigitValidator =
 /**
  * Digits available in the game for a radix, space-separated and uppercase for
  * hex, e.g. base 10 gives "0 1 2 3 4 5 6 7 8 9".
- *
- * Stub: TDD red step, returns an empty string.
  */
-export const digitsOfBase = (_base: NumericBase): string => '';
+export const digitsOfBase = (base: NumericBase): string =>
+  DIGIT_ALPHABET.slice(0, base).toUpperCase().split('').join(' ');
