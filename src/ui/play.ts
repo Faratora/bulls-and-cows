@@ -1,7 +1,7 @@
 import { isValidGuess } from '../game/guess.js';
 import { attemptsOf, elapsedOf, isDuplicateGuess } from '../game/state.js';
 import type { GameState, Guess } from '../game/types.js';
-import { createDigitValidator } from '../game/digits.js';
+import { createDigitValidator, digitsOfBase } from '../game/digits.js';
 
 /** Callbacks the play screen invokes on user interaction. */
 export interface PlayActions {
@@ -100,6 +100,13 @@ export const createPlayScreen = (
   const timer = el('span', 'play__stat', `Время: ${formatElapsed(elapsedOf(state, now))}`);
   info.append(el('span', 'play__stat', `Попытки: ${attemptsOf(state)}`), timer);
 
+  // The alphabet picked on the settings screen, shown while guessing.
+  const digits = el('p', 'play__digits');
+  digits.append(
+    el('span', 'play__digits-label', 'Цифры в игре:'),
+    el('span', 'play__digits-value', digitsOfBase(state.settings.base)),
+  );
+
   const form = el('div', 'play__form');
   const input = document.createElement('input');
   input.className = 'play__input';
@@ -150,7 +157,7 @@ export const createPlayScreen = (
     });
   }
 
-  screen.append(header, meta, info, form, createStatus(state, lastGuess), history);
+  screen.append(header, meta, info, digits, form, createStatus(state, lastGuess), history);
 
   return { element: screen, timer };
 };
