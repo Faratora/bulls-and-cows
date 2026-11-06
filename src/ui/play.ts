@@ -95,7 +95,7 @@ export const createPlayScreen = (
 
   const screen = el('section', 'screen screen--play');
 
-  // Title row: the heading plus a button that restarts the round in place.
+  // Title row: the heading plus a button that returns to the settings screen.
   const header = el('div', 'screen__header');
   header.appendChild(el('h1', 'screen__title', 'Bulls and Cows'));
 

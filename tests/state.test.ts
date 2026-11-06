@@ -42,7 +42,6 @@ describe('game state', () => {
 
       expect(state.history).toEqual([]);
       expect(state.startedAt).toBe(START);
-      expect(state.firstGuessAt).toBe(0);
       expect(state.finishedAt).toBeNull();
     });
 
@@ -154,26 +153,12 @@ describe('game state', () => {
       expect(attemptsOf(second)).toBe(2);
     });
 
-    it('shows no elapsed time before the first guess', () => {
-      expect(elapsedOf(startedRound(), START + 2_500)).toBe(0);
-    });
-
-    it('measures elapsed time from the first guess while playing', () => {
-      const first = recordGuess(startedRound(), '5678', START + 1_000);
-
-      expect(elapsedOf(first, START + 3_500)).toBe(2_500);
-    });
-
-    it('preserves the first-guess time across subsequent guesses', () => {
-      const first = recordGuess(startedRound(), '5678', START + 1_000);
-      const second = recordGuess(first, '6789', START + 2_000);
-
-      expect(elapsedOf(second, START + 4_000)).toBe(3_000);
+    it('measures elapsed time from the round start while playing', () => {
+      expect(elapsedOf(startedRound(), START + 2_500)).toBe(2_500);
     });
 
     it('freezes elapsed time at the win moment', () => {
-      const first = recordGuess(startedRound(), '5678', START + 1_000);
-      const won = recordGuess(first, '0123', START + 6_000);
+      const won = recordGuess(startedRound(), '0123', START + 5_000);
 
       expect(elapsedOf(won, START + 900_000)).toBe(5_000);
     });
