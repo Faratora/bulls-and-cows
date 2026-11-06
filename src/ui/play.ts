@@ -95,7 +95,7 @@ export const createPlayScreen = (
 
   const screen = el('section', 'screen screen--play');
 
-  // Title row: the heading plus a button that restarts the round in place.
+  // Title row: the heading plus a button that returns to the settings screen.
   const header = el('div', 'screen__header');
   header.appendChild(el('h1', 'screen__title', 'Bulls and Cows'));
 
@@ -103,12 +103,6 @@ export const createPlayScreen = (
   newGameButton.type = 'button';
   newGameButton.addEventListener('click', actions.onNewGame);
   header.appendChild(newGameButton);
-
-  const meta = el(
-    'p',
-    'screen__subtitle',
-    `Длина ${state.settings.length} · основание ${state.settings.base}`,
-  );
 
   const info = el('div', 'play__info');
   const timer = el('span', 'play__stat', `Время: ${formatElapsed(elapsedOf(state, now))}`);
@@ -167,7 +161,7 @@ export const createPlayScreen = (
     });
   }
 
-  screen.append(header, meta, info, digits, form, createStatus(state, lastGuess), history);
+  screen.append(header, info, digits, form, createStatus(state, lastGuess), history);
 
   return { element: screen, timer };
 };
