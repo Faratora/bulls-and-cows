@@ -107,7 +107,7 @@ const start = (): void => {
           render();
         },
         onNewGame: () => {
-          state = startRound(state.settings);
+          state = emptyState(state.settings);
           lastGuess = null;
           savedRound = null;
           render();
