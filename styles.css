@@ -62,13 +62,17 @@ body {
   border: 1px solid var(--disabled);
   border-radius: 8px;
   background: transparent;
+  color: var(--text);
   white-space: nowrap;
   cursor: pointer;
-  transition: border-color 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .screen__new-game:hover {
   border-color: var(--accent);
+  background: rgba(91, 140, 255, 0.14);
 }
 
 .screen__subtitle {
