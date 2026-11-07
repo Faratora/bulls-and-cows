@@ -1,0 +1,393 @@
+/* Bulls and Cows — global styles */
+
+:root {
+  color-scheme: dark;
+  --bg: #14171f;
+  --panel: #1e2330;
+  --text: #e8eaf0;
+  --muted: #9aa1b2;
+  --accent: #5b8cff;
+  --accent-hover: #7aa2ff;
+  --disabled: #2a3040;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+}
+
+#app {
+  width: 100%;
+  max-width: 640px;
+  padding: 32px 16px;
+}
+
+.screen {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.screen__title {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+/* Title row: heading on the left, secondary actions on the right. */
+.screen__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.screen__header .screen__title {
+  margin: 0;
+}
+
+.screen__new-game {
+  padding: 8px 16px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.screen__new-game:hover {
+  border-color: var(--accent);
+  background: rgba(91, 140, 255, 0.14);
+}
+
+.screen__subtitle {
+  margin: 0 0 20px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/*
+ * Shared hint with the digits of the chosen radix (settings and play screens).
+ * Inline spans, not flex: the label and the monospace value must sit on the
+ * same text baseline, and the row must wrap like ordinary text.
+ */
+.digits-hint {
+  margin: 16px 0;
+  line-height: 1.5;
+}
+
+.digits-hint__label {
+  color: var(--muted);
+}
+
+.digits-hint__value {
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.15em;
+}
+
+.settings__group {
+  margin-bottom: 20px;
+}
+
+.settings__label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.settings__options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.settings__option {
+  padding: 8px 16px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.settings__option:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(91, 140, 255, 0.1);
+}
+
+.settings__option:disabled {
+  color: var(--muted);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.settings__option.is-selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  font-weight: 600;
+}
+
+.settings__hint {
+  margin: 16px 0;
+  color: var(--muted);
+}
+
+.settings__start {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.settings__start:hover {
+  background: var(--accent-hover);
+}
+
+/* --- Play screen --- */
+
+.play__info {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.play__stat {
+  color: var(--muted);
+}
+
+.play__form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.play__input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 18px;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.2em;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.play__input:focus {
+  border-color: var(--accent);
+}
+
+.play__submit {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.play__submit:hover {
+  background: var(--accent-hover);
+}
+
+.play__status {
+  margin: 0 0 20px;
+  color: var(--muted);
+}
+
+.play__status--warn {
+  color: #ffb84d;
+}
+
+.history {
+  border-top: 1px solid var(--disabled);
+  padding-top: 16px;
+}
+
+.history__title {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.history__empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.history__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--bg);
+  margin-bottom: 8px;
+}
+
+.history__index {
+  width: 24px;
+  color: var(--muted);
+}
+
+.history__guess {
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.2em;
+  min-width: 6em;
+}
+
+.history__score {
+  color: var(--muted);
+}
+
+/* --- Win screen --- */
+
+.win__secret {
+  font-family: 'Consolas', monospace;
+  font-size: 24px;
+  letter-spacing: 0.3em;
+  color: var(--accent-hover);
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.win__stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.win__stat {
+  color: var(--text);
+}
+
+.win__button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.win__button:hover {
+  background: var(--accent-hover);
+}
+
+/* --- Secondary button and leaderboard screen --- */
+
+.settings__secondary {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.settings__secondary:hover {
+  border-color: var(--accent);
+}
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.leaderboard__empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.leaderboard__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.leaderboard__rank {
+  width: 28px;
+  color: var(--muted);
+}
+
+.leaderboard__badge {
+  /* Badges now differ within one list: keep the column width stable. */
+  flex-shrink: 0;
+  min-width: 62px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--disabled);
+  color: var(--text);
+  text-align: center;
+}
+
+.leaderboard__attempts {
+  flex: 1;
+}
+
+.leaderboard__time {
+  color: var(--muted);
+  font-family: 'Consolas', monospace;
+}
+
+.leaderboard__back {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--disabled);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.leaderboard__back:hover {
+  border-color: var(--accent);
+}
