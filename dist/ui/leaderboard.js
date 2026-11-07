@@ -1,0 +1,45 @@
+import { formatElapsed } from './play.js';
+import { formatSettings, loadRecords } from './leaderboard-storage.js';
+const el = (tag, className, text = '') => {
+    const node = document.createElement(tag);
+    node.className = className;
+    if (text !== '') {
+        node.textContent = text;
+    }
+    return node;
+};
+/** One row of the table; rank is computed at render time, not stored. */
+const createRow = (record, rank) => {
+    const row = el('div', 'leaderboard__row');
+    row.appendChild(el('span', 'leaderboard__rank', String(rank)));
+    row.appendChild(el('span', 'leaderboard__badge', formatSettings(record)));
+    row.appendChild(el('span', 'leaderboard__attempts', `${record.attempts} попыт.`));
+    row.appendChild(el('span', 'leaderboard__time', formatElapsed(record.elapsedMs)));
+    return row;
+};
+/**
+ * Leaderboard screen: the single shared list of the best results across every
+ * settings combination. Each row carries a badge with the settings the record
+ * was achieved in. Records are read fresh from storage on every render.
+ */
+export const createLeaderboardScreen = (actions) => {
+    const screen = el('section', 'screen screen--leaderboard');
+    const title = el('h1', 'screen__title', 'Таблица рекордов');
+    const subtitle = el('p', 'screen__subtitle', 'Общий список лучших результатов: меньше попыток, затем меньше времени. Бейдж показывает настройки.');
+    const list = el('div', 'leaderboard');
+    const records = loadRecords();
+    if (records.length === 0) {
+        list.appendChild(el('p', 'leaderboard__empty', 'Рекордов пока нет — сыграйте раунд!'));
+    }
+    else {
+        records.forEach((record, index) => {
+            list.appendChild(createRow(record, index + 1));
+        });
+    }
+    const backButton = el('button', 'leaderboard__back', 'К настройкам');
+    backButton.type = 'button';
+    backButton.addEventListener('click', actions.onBack);
+    screen.append(title, subtitle, list, backButton);
+    return screen;
+};
+//# sourceMappingURL=leaderboard.js.map
